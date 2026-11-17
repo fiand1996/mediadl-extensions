@@ -1,0 +1,170 @@
+{
+  "version": 1,
+  "generatedAt": "2026-11-17T23:03:51.105Z",
+  "count": 7,
+  "extensions": [
+    {
+      "id": "3hentai",
+      "name": "3Hentai Extractor",
+      "version": "1.0.0",
+      "description": "Extracts galleries from 3hentai.net.",
+      "urlPatterns": [
+        "https?:\\/\\/(?:www\\.)?3hentai\\.net\\/d\\/([0-9]+)"
+      ],
+      "cookies": {
+        "support": false,
+        "required": false,
+        "description": "No cookies required for 3hentai."
+      },
+      "allowedImageDomains": [
+        "3hentai.net",
+        "cdn.3hentai.net"
+      ],
+      "imageReferer": "https://3hentai.net/",
+      "bundleFile": "3hentai.js",
+      "sha256": "8616d7fd9a5fb040b98ffe8ccde8a10eccdfae81084168ed3c7849ae13bf35a0",
+      "size": 4451,
+      "updatedAt": "2026-11-17T23:03:51.026Z"
+    },
+    {
+      "id": "babesource",
+      "name": "BabeSource Extractor",
+      "version": "1.0.0",
+      "description": "Extracts image galleries from BabeSource.",
+      "urlPatterns": [
+        "https?:\\/\\/(?:www\\.)?babesource\\.com\\/galleries\\/([a-zA-Z0-9\\-_]+)"
+      ],
+      "cookies": {
+        "support": false,
+        "required": false
+      },
+      "allowedImageDomains": [
+        "babesource.com",
+        "media.babesource.com"
+      ],
+      "imageReferer": "https://www.babesource.com/",
+      "bundleFile": "babesource.js",
+      "sha256": "88c6229cbf256a4952c941bc544665a2d7ab599cb13f8bff844f9418932288f0",
+      "size": 3494,
+      "updatedAt": "2026-11-17T23:03:51.042Z"
+    },
+    {
+      "id": "cosplaytele",
+      "name": "CosplayTele Extractor",
+      "version": "1.0.0",
+      "description": "Extracts galleries from cosplaytele.com.",
+      "urlPatterns": [
+        "https?:\\/\\/(?:www\\.)?cosplaytele\\.com\\/[a-zA-Z0-9\\-_]+\\/?"
+      ],
+      "cookies": {
+        "support": false,
+        "required": false,
+        "description": "No cookies required for CosplayTele."
+      },
+      "allowedImageDomains": [
+        "cosplaytele.com"
+      ],
+      "imageReferer": "https://cosplaytele.com/",
+      "bundleFile": "cosplaytele.js",
+      "sha256": "bcc54e38bbbbdd913b1544c0bd58045c16fc8647c4092884d3b9e0c6b693ccb1",
+      "size": 4301,
+      "updatedAt": "2026-11-17T23:03:51.056Z"
+    },
+    {
+      "id": "e-hentai",
+      "name": "E-Hentai Extractor",
+      "version": "1.0.0",
+      "description": "Extracts galleries from e-hentai.org.",
+      "urlPatterns": [
+        "https?:\\/\\/(?:www\\.)?(?:e-hentai|exhentai)\\.org\\/g\\/([0-9]+)\\/([a-zA-Z0-9]+)"
+      ],
+      "cookies": {
+        "support": true,
+        "required": false,
+        "description": "Optional e-hentai / exhentai member cookies (ipb_member_id, ipb_pass_hash) for restricted galleries."
+      },
+      "allowedImageDomains": [
+        "e-hentai.org",
+        "exhentai.org",
+        "ehgt.org",
+        "hath.network"
+      ],
+      "imageReferer": "https://e-hentai.org/",
+      "bundleFile": "e-hentai.js",
+      "sha256": "3b28921725a9fafdb558ee47b39a3b8809d4e73fd64c366f4eda5afa79aca9a6",
+      "size": 4132,
+      "updatedAt": "2026-11-17T23:03:51.070Z"
+    },
+    {
+      "id": "instagram",
+      "name": "Instagram Extractor",
+      "version": "1.0.0",
+      "description": "Extracts posts, reels, stories, and carousels from Instagram using custom mobile API requests.",
+      "urlPatterns": [
+        "https?:\\/\\/(?:www\\.)?instagram\\.com\\/(?:[^\\/]+\\/)?(?:p|reels?|tv)\\/([^/?#]+)",
+        "https?:\\/\\/(?:www\\.)?instagram\\.com\\/stories\\/(?:highlights\\/|[^/?#]+\\/)([0-9]+)",
+        "https?:\\/\\/(?:www\\.)?instagram\\.com\\/share\\/(?:p|reel)\\/([^/?#]+)"
+      ],
+      "cookies": {
+        "support": true,
+        "required": false,
+        "description": "Requires active Instagram session cookies to bypass login wall and fetch carousels/videos."
+      },
+      "allowedImageDomains": [
+        "fbcdn.net",
+        "instagram.com"
+      ],
+      "imageReferer": "https://www.instagram.com/",
+      "bundleFile": "instagram.js",
+      "sha256": "fc9ac808004d17ccaebcab6a7b9a4a4dd351bdc3c3e73d36da603e8ab80477f1",
+      "size": 4241,
+      "updatedAt": "2026-11-17T23:03:51.084Z"
+    },
+    {
+      "id": "pixiv",
+      "name": "Pixiv Extractor",
+      "version": "1.0.0",
+      "description": "Extracts artwork illustrations and manga pages from Pixiv.",
+      "urlPatterns": [
+        "https?:\\/\\/(?:www\\.)?pixiv\\.net\\/(?:en\\/)?artworks\\/([0-9]+)"
+      ],
+      "cookies": {
+        "support": true,
+        "required": false,
+        "description": "Optional Pixiv session cookies for age-restricted or private artworks."
+      },
+      "allowedImageDomains": [
+        "pximg.net",
+        "pixiv.net"
+      ],
+      "imageReferer": "https://www.pixiv.net/",
+      "bundleFile": "pixiv.js",
+      "sha256": "23528e16dc0ccfac1ed4f5aa8314a498ea49e92e38e5be672b59fa832d900b93",
+      "size": 4547,
+      "updatedAt": "2026-11-17T23:03:51.094Z"
+    },
+    {
+      "id": "pornpics",
+      "name": "PornPics Extractor",
+      "version": "1.0.0",
+      "description": "Extracts high-resolution image galleries from PornPics using FlareSolverr for Cloudflare bypass.",
+      "urlPatterns": [
+        "https?:\\/\\/(?:www\\.)?pornpics\\.com\\/galleries\\/([a-zA-Z0-9\\-_]+)"
+      ],
+      "cookies": {
+        "support": false,
+        "required": false
+      },
+      "allowedImageDomains": [
+        "pornpics.com",
+        "pornpics.net",
+        "cdni.pornpics.com"
+      ],
+      "imageReferer": "https://www.pornpics.com/",
+      "bundleFile": "pornpics.js",
+      "sha256": "7a1d0a2ddf41186b0886be06c478a441df2100707c6e14809c071ae9c98a3b08",
+      "size": 3411,
+      "updatedAt": "2026-11-17T23:03:51.105Z"
+    }
+  ]
+}
