@@ -1,45 +1,51 @@
 name: Build and Publish Extensions
 
+concurrency:
+  group: publish-extensions-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
-  push:
-    branches: [main]
-    paths:
-      - "src/core/**"
-      - "src/extensions/**"
-      - "scripts/build.ts"
-      - "package.json"
-      - "package-lock.json"
-      - "pnpm-lock.yaml"
-      - "pnpm-workspace.yaml"
-      - "tsconfig.json"
-  workflow_dispatch:
+  workflow_run:
+    workflows: ["CI"]
+    branches: ["main"]
+    types: ["completed"]
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-latest
+    if: github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-24.04
+
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
-          node-version: 20
-          cache: "npm"
+          node-version: 24
+          package-manager-cache: false
 
-      - name: Install Dependencies
-        run: npm ci || npm install
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
 
-      - name: Type Check
-        run: npm run type-check
+      - name: Verify toolchain
+        run: |
+          node -v
+          pnpm -v
 
-      - name: Build All Extensions & Manifest Index
-        run: npm run build
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run typecheck
+        run: pnpm run type-check
+
+      - name: Build all extensions and manifest
+        run: pnpm run build
 
       - name: Deploy to GitHub Pages / Repo Branch
         uses: peaceiris/actions-gh-pages@v4
