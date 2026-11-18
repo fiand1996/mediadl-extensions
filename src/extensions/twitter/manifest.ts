@@ -3,10 +3,10 @@ import { ExtensionManifest } from "../../core/types";
 export const twitterManifest: ExtensionManifest = {
   id: "twitter",
   name: "Twitter / X",
-  version: "1.0.0",
+  version: "1.0.2",
   description: "Media extractor for Twitter/X posts and videos",
   urlPatterns: [
-    /^https?:\/\/(?:www\.)?(?:twitter|x)\.com\/([a-zA-Z0-9_]+)\/status\/([0-9]+)/i,
+    /^https?:\/\/(?:(?:www|mobile)\.)?(?:twitter|x)\.com\/(?:[a-zA-Z0-9_]+\/status|i\/web\/status|statuses)\/([0-9]+)(?:\/video\/([0-9]+))?/i,
   ],
   cookies: {
     support: true,
