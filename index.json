@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-11-18T16:05:29.160Z",
+  "generatedAt": "2026-11-18T18:19:41.094Z",
   "count": 9,
   "extensions": [
     {
@@ -24,7 +24,7 @@
       "bundleFile": "3hentai.js",
       "sha256": "8616d7fd9a5fb040b98ffe8ccde8a10eccdfae81084168ed3c7849ae13bf35a0",
       "size": 4451,
-      "updatedAt": "2026-11-18T16:05:29.057Z"
+      "updatedAt": "2026-11-18T18:19:40.957Z"
     },
     {
       "id": "babesource",
@@ -46,7 +46,7 @@
       "bundleFile": "babesource.js",
       "sha256": "88c6229cbf256a4952c941bc544665a2d7ab599cb13f8bff844f9418932288f0",
       "size": 3494,
-      "updatedAt": "2026-11-18T16:05:29.076Z"
+      "updatedAt": "2026-11-18T18:19:40.979Z"
     },
     {
       "id": "civitai",
@@ -72,7 +72,7 @@
       "bundleFile": "civitai.js",
       "sha256": "84b77898c449c23f711b9fdce692e9aa8e3b3c46bd357cbbb0bda0031b21acf9",
       "size": 6021,
-      "updatedAt": "2026-11-18T16:05:29.095Z"
+      "updatedAt": "2026-11-18T18:19:40.999Z"
     },
     {
       "id": "cosplaytele",
@@ -94,7 +94,7 @@
       "bundleFile": "cosplaytele.js",
       "sha256": "bcc54e38bbbbdd913b1544c0bd58045c16fc8647c4092884d3b9e0c6b693ccb1",
       "size": 4301,
-      "updatedAt": "2026-11-18T16:05:29.109Z"
+      "updatedAt": "2026-11-18T18:19:41.021Z"
     },
     {
       "id": "e-hentai",
@@ -119,7 +119,7 @@
       "bundleFile": "e-hentai.js",
       "sha256": "3b28921725a9fafdb558ee47b39a3b8809d4e73fd64c366f4eda5afa79aca9a6",
       "size": 4132,
-      "updatedAt": "2026-11-18T16:05:29.119Z"
+      "updatedAt": "2026-11-18T18:19:41.036Z"
     },
     {
       "id": "instagram",
@@ -144,7 +144,7 @@
       "bundleFile": "instagram.js",
       "sha256": "fc9ac808004d17ccaebcab6a7b9a4a4dd351bdc3c3e73d36da603e8ab80477f1",
       "size": 4241,
-      "updatedAt": "2026-11-18T16:05:29.129Z"
+      "updatedAt": "2026-11-18T18:19:41.052Z"
     },
     {
       "id": "pixiv",
@@ -167,7 +167,7 @@
       "bundleFile": "pixiv.js",
       "sha256": "23528e16dc0ccfac1ed4f5aa8314a498ea49e92e38e5be672b59fa832d900b93",
       "size": 4547,
-      "updatedAt": "2026-11-18T16:05:29.140Z"
+      "updatedAt": "2026-11-18T18:19:41.064Z"
     },
     {
       "id": "pornpics",
@@ -190,15 +190,15 @@
       "bundleFile": "pornpics.js",
       "sha256": "7a1d0a2ddf41186b0886be06c478a441df2100707c6e14809c071ae9c98a3b08",
       "size": 3411,
-      "updatedAt": "2026-11-18T16:05:29.150Z"
+      "updatedAt": "2026-11-18T18:19:41.075Z"
     },
     {
       "id": "twitter",
       "name": "Twitter / X",
-      "version": "1.0.0",
+      "version": "1.0.2",
       "description": "Media extractor for Twitter/X posts and videos",
       "urlPatterns": [
-        "^https?:\\/\\/(?:www\\.)?(?:twitter|x)\\.com\\/([a-zA-Z0-9_]+)\\/status\\/([0-9]+)"
+        "^https?:\\/\\/(?:(?:www|mobile)\\.)?(?:twitter|x)\\.com\\/(?:[a-zA-Z0-9_]+\\/status|i\\/web\\/status|statuses)\\/([0-9]+)(?:\\/video\\/([0-9]+))?"
       ],
       "cookies": {
         "support": true,
@@ -212,9 +212,9 @@
       ],
       "imageReferer": "https://twitter.com/",
       "bundleFile": "twitter.js",
-      "sha256": "091648c29cf01bf6a8bdbec35a27390b34acdb0e6ad0746b00b6313c82323368",
-      "size": 4145,
-      "updatedAt": "2026-11-18T16:05:29.159Z"
+      "sha256": "bf402f4ba6184e5dfbf3835bc80adc1928f6473858502a496e045aeef941ae99",
+      "size": 9776,
+      "updatedAt": "2026-11-18T18:19:41.094Z"
     }
   ]
 }
