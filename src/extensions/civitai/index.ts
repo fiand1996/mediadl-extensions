@@ -2,6 +2,87 @@ import { ExtensionContext, PostResult } from "../../core/types";
 import { BaseExtension } from "../../core/base";
 import { civitaiManifest } from "./manifest";
 
+interface CivitaiImageData {
+  id?: string | number;
+  url?: string;
+  hash?: string;
+  name?: string;
+  postId?: number;
+  username?: string;
+  user?: {
+    username?: string;
+    image?: string;
+  };
+  owner?: {
+    username?: string;
+    image?: string;
+  };
+  createdAt?: string;
+  meta?: {
+    prompt?: string;
+    negativePrompt?: string;
+    steps?: number;
+    sampler?: string;
+    cfgScale?: number;
+  };
+  metadata?: CivitaiImageData["meta"];
+}
+
+function decodeHtmlAttribute(value: string): string {
+  return value
+    .replace(/&amp;/gi, "&")
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;|&apos;/gi, "'")
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">")
+    .replace(/&#(\d+);/g, (_, code: string) =>
+      String.fromCodePoint(Number(code)),
+    )
+    .replace(/&#x([0-9a-f]+);/gi, (_, code: string) =>
+      String.fromCodePoint(parseInt(code, 16)),
+    );
+}
+
+function extractImageUrlsFromHtml(html: string): string[] {
+  const imageUrls: Array<{ url: string; primary: boolean }> = [];
+
+  for (const tag of html.matchAll(/<img\b[^>]*>/gi)) {
+    const attributes = tag[0];
+    const sourceMatch = attributes.match(
+      /\b(?:src|data-src|data-original)\s*=\s*(["'])(.*?)\1/i,
+    );
+    if (!sourceMatch) continue;
+
+    const source = decodeHtmlAttribute(sourceMatch[2]).replace(/\\\//g, "/");
+    try {
+      const imageUrl = new URL(source, "https://civitai.red/");
+      if (
+        imageUrl.protocol === "https:" &&
+        /(^|\.)image\.civitai\.com$|(^|\.)getimg\.ai$|(^|\.)givitai\.com$/i.test(imageUrl.hostname) &&
+        /\/original=true\//i.test(imageUrl.pathname)
+      ) {
+        imageUrls.push({
+          url: imageUrl.href,
+          primary: /\bq32jQG_image\b/.test(attributes),
+        });
+      }
+    } catch {
+      continue;
+    }
+  }
+
+  const uniqueImages = [...new Map(imageUrls.map((image) => [image.url, image])).values()];
+  const hasPrimaryImage = uniqueImages.some((image) => image.primary);
+  return uniqueImages
+    .filter((image) => !hasPrimaryImage || image.primary)
+    .sort((a, b) => {
+      const aOriginal = a.url.includes("/original=true/");
+      const bOriginal = b.url.includes("/original=true/");
+      return Number(bOriginal) - Number(aOriginal);
+    })
+    .map((image) => image.url);
+}
+
 export class CivitaiExtension extends BaseExtension {
   manifest = civitaiManifest;
 
@@ -9,10 +90,26 @@ export class CivitaiExtension extends BaseExtension {
     url: string,
     context: ExtensionContext,
   ): Record<string, string> {
+    const isApiRequest = new URL(url).pathname.startsWith("/api/");
     return {
-      "User-Agent": "curl/8.0.0",
-      Accept: "application/json, text/plain, */*",
-      Referer: "https://civitai.com/",
+      "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+      Accept: isApiRequest
+        ? "application/json, text/plain, */*"
+        : "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+      "Accept-Language": "en,en-US;q=0.9,id;q=0.8,ja;q=0.7,zh-CN;q=0.6,zh;q=0.5",
+      Referer: `${new URL(url).origin}/`,
+      ...(isApiRequest
+        ? {}
+        : {
+            "Cache-Control": "max-age=0",
+            "Sec-CH-UA": '"Not;A=Brand";v="8", "Chromium";v="150", "Google Chrome";v="150"',
+            "Sec-CH-UA-Mobile": "?0",
+            "Sec-CH-UA-Platform": '"macOS"',
+            "Sec-Fetch-Dest": "empty",
+            "Sec-Fetch-Mode": "navigate",
+            "Sec-Fetch-Site": "same-origin",
+            "Upgrade-Insecure-Requests": "1",
+          }),
     };
   }
 
@@ -26,21 +123,59 @@ export class CivitaiExtension extends BaseExtension {
     }
 
     const imageId = imageMatch[1];
+    const requestedOrigin = new URL(url).origin.replace("://www.", "://");
+    const fallbackOrigin = requestedOrigin.endsWith(".red")
+      ? "https://civitai.com"
+      : "https://civitai.red";
+    const apiOrigins = [requestedOrigin, fallbackOrigin];
     let items: PostResult["items"] = [];
     let authorInfo = { username: "civitai_user", avatar: "", verified: false };
     let caption = "";
     let createdAt = new Date().toISOString();
+    let targetImage: CivitaiImageData | null = null;
+    let postImages: CivitaiImageData[] = [];
+    const apiDiagnostics: string[] = [];
+    let htmlText = "";
+    let pageStatus = 0;
+    let pageBlockedByCloudflare = false;
 
-    const pageRes = await this.request(url, context);
-    const htmlText = await pageRes.text();
+    for (const apiOrigin of apiOrigins) {
+      const apiUrl = `${apiOrigin}/api/v1/images?imageId=${imageId}&limit=1`;
+      try {
+        const res = await this.request(apiUrl, context);
+        if (!res.ok) {
+          apiDiagnostics.push(`${new URL(apiUrl).host}: HTTP ${res.status}`);
+          continue;
+        }
+        const resData = await res.json() as { items?: CivitaiImageData[] };
+        const found = resData.items?.find(
+          (item) => String(item.id) === imageId,
+        );
+        if (found) {
+          targetImage = found;
+          break;
+        }
+        apiDiagnostics.push(
+          `${new URL(apiUrl).host}: HTTP ${res.status}, image not present in items`,
+        );
+      } catch (error) {
+        const reason = error instanceof Error ? error.name : "UnknownError";
+        apiDiagnostics.push(`${new URL(apiUrl).host}: ${reason}`);
+      }
+    }
 
-    let targetImage: any = null;
-    let postImages: any[] = [];
+    if (!targetImage) {
+      const pageRes = await this.request(url, context);
+      htmlText = await pageRes.text();
+      pageStatus = pageRes.status;
+      pageBlockedByCloudflare =
+        pageRes.headers.get("cf-mitigated") === "challenge";
+    }
 
     const matchData = htmlText.match(
       /<script id="__NEXT_DATA__" type="application\/json">(.*?)<\/script>/,
     );
-    if (matchData) {
+    if (!targetImage && matchData) {
       try {
         const nextData = JSON.parse(matchData[1]);
         const trpcState = nextData.props.pageProps.trpcState;
@@ -78,54 +213,44 @@ export class CivitaiExtension extends BaseExtension {
       } catch (e) {}
     }
 
-    // Also try trpc batch / api endpoint for single image if hash is missing
-    if (!targetImage || !targetImage.hash || !targetImage.postId) {
-      try {
-        const trpcUrl = `https://civitai.com/api/trpc/image.getById?input=${encodeURIComponent(JSON.stringify({ json: { id: Number(imageId) } }))}`;
-        const trpcRes = await this.request(trpcUrl, context);
-        const trpcJson = await trpcRes.json();
-        const imgData = trpcJson?.result?.data?.json;
-        if (imgData) {
-          targetImage = {
-            ...targetImage,
-            ...imgData,
-          };
-        }
-      } catch (e) {}
-    }
-
-    if (!targetImage || !targetImage.hash) {
-      const apiUrl = `https://civitai.com/api/v1/images?imageIds=${imageId}`;
-      const res = await this.request(apiUrl, context);
-      const bodyText = await res.text();
-      try {
-        const resData = JSON.parse(bodyText);
-        if (resData && resData.items) {
-          const found = resData.items.find(
-            (i: any) => String(i.id) === imageId,
-          );
-          if (found) {
-            targetImage = found;
-          }
-        }
-      } catch (e) {}
+    if (!targetImage) {
+      let ogMatch = htmlText.match(/<meta[^>]+(?:property|name)=["'](?:og:image|twitter:image)["'][^>]+content=["']([^"']+)/i);
+      if (!ogMatch) {
+        const reverseMatch = htmlText.match(/<meta[^>]+content=["']([^"']+)["'][^>]+(?:property|name)=["'](?:og:image|twitter:image)["']/i);
+        if (reverseMatch) ogMatch = reverseMatch;
+      }
+      if (ogMatch?.[1]) {
+        targetImage = { id: Number(imageId), url: ogMatch[1].replace(/&amp;/g, "&") };
+      }
     }
 
     if (!targetImage) {
-      throw new Error(`Civitai image not found or unavailable: ${imageId}`);
+      if (pageBlockedByCloudflare) {
+        throw new Error(
+          `Civitai page request was blocked by Cloudflare (HTTP ${pageStatus}); no image HTML was available to parse.`,
+        );
+      }
+      throw new Error(
+        `Civitai image ${imageId} could not be extracted. Page returned HTTP ${pageStatus}; API results: ${apiDiagnostics.join("; ") || "no matching image data"}.`,
+      );
     }
 
     const postId = targetImage.postId;
     if (postId) {
-      const postApiUrl = `https://civitai.com/api/v1/images?postId=${postId}`;
-      const postRes = await this.request(postApiUrl, context);
-      const postBodyText = await postRes.text();
-      try {
-        const postResData = JSON.parse(postBodyText);
-        if (postResData && postResData.items && postResData.items.length > 0) {
-          postImages = postResData.items;
-        }
-      } catch (e) {}
+      for (const apiOrigin of apiOrigins) {
+        try {
+          const postApiUrl = `${apiOrigin}/api/v1/images?postId=${postId}&limit=100`;
+          const postRes = await this.request(postApiUrl, context);
+          if (!postRes.ok) continue;
+          const postResData = await postRes.json() as {
+            items?: CivitaiImageData[];
+          };
+          if (postResData.items && postResData.items.length > 0) {
+            postImages = postResData.items;
+            break;
+          }
+        } catch (e) {}
+      }
     }
 
     if (postImages.length === 0) {

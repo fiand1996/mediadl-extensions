@@ -3,7 +3,7 @@ import { ExtensionManifest } from "../../core/types";
 export const civitaiManifest: ExtensionManifest = {
   id: "civitai",
   name: "Civitai",
-  version: "1.0.0",
+  version: "1.0.6",
   description: "Media extractor for Civitai images",
   urlPatterns: [
     /^https?:\/\/(?:www\.)?civitai\.(?:com|red)\/images\/([0-9]+)/i,
