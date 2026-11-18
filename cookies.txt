@@ -1,0 +1,17 @@
+# Netscape HTTP Cookie File
+# Parsed from cURL on 2026-11-15T07:17:03.150Z
+pixiv.net	TRUE	/	TRUE	2147483647	first_visit_datetime_pc	2026-11-14%2022%3A19%3A54
+pixiv.net	TRUE	/	TRUE	2147483647	cc1	2026-11-14%2022%3A19%3A54
+pixiv.net	TRUE	/	TRUE	2147483647	p_ab_id	8
+pixiv.net	TRUE	/	TRUE	2147483647	p_ab_id_2	1
+pixiv.net	TRUE	/	TRUE	2147483647	p_ab_d_id	587039591
+pixiv.net	TRUE	/	TRUE	2147483647	PHPSESSID	75839347_HUTUBtXWqI4QU9AOfXa59axAhefqmNIw
+pixiv.net	TRUE	/	TRUE	2147483647	device_token	e1467455e929b1d0b859129fecbb368d
+pixiv.net	TRUE	/	TRUE	2147483647	privacy_policy_agreement	7
+pixiv.net	TRUE	/	TRUE	2147483647	c_type	31
+pixiv.net	TRUE	/	TRUE	2147483647	privacy_policy_notification	0
+pixiv.net	TRUE	/	TRUE	2147483647	a_type	0
+pixiv.net	TRUE	/	TRUE	2147483647	b_type	1
+pixiv.net	TRUE	/	TRUE	2147483647	yuid_b	F1NRAFg
+pixiv.net	TRUE	/	TRUE	2147483647	cf_clearance	Cq67y5os5DwEsLgCZNIhA0V73OERuy9N7hgTzk5Y5FYClezvAvW7Dx2zSggC0502ObczoP0wEWcqkS9ESHj9VL9Rk1ndBgnMS70CD38IFlYOYpWL6pYBbm_Fy-lJs32RuazwuNnr0LKU3_0MT3ns6i9gRRxf1YauZdOTszwuG5VIvdhDPhGTtFfgeLFhjLxwsFKncJh42Z03fcGFbD7GUFOTShgnKCGFcatgz-m_JWDKXNiwy6Ltp8K2JFAqZ2O4FHyw6dOKEKTSu5M-xCByxSRsPHk9fETpfPt_OW3aP2_Rut0GfxZa-XU
+pixiv.net	TRUE	/	TRUE	2147483647	__cf_bm	.PGwLCJCsL5pzPIcyDJkfj1s0CO2fsnQi_oQZp7to_Y-1794726094.9909363-1.0.1.1-8s1szk3P41V.yuydBAmFJcmnTB9tKjbtqlk06sq9RGJpdBXLn5s1Izz0GVgBjqFki5U7yu7IyATQuEkmT6gVUJii97HmzfrZMC9wf6VTpvoAW_GYD3P4zpx_DgV7KoFUpgSaMeclzcalqSkBiUVdCw
